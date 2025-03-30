@@ -29,12 +29,14 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
+//import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
-import frc.robot.Constants;
+import frc.robot.Constants.YAGSLConstants;
+import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +72,33 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   private Vision vision;
 
+  // FRC 291: Added Speed State Enum
+  public enum SpeedState {
+    FAST(SwerveConstants.SPEED_FAST_MAX_TRANSITIONAL, SwerveConstants.SPEED_FAST_MAX_ROTATIONAL),
+    NORMAL(SwerveConstants.SPEED_NORMAL_MAX_TRANSITIONAL, SwerveConstants.SPEED_NORMAL_MAX_ROTATIONAL),
+    SLOW(SwerveConstants.SPEED_SLOW_MAX_TRANSITIONAL, SwerveConstants.SPEED_SLOW_MAX_ROTATIONAL),
+    VERY_SLOW(SwerveConstants.SPEED_VERY_SLOW_MAX_TRANSITIONAL, SwerveConstants.SPEED_VERY_SLOW_MAX_ROTATIONAL);
+
+    private final double maxTranslationalSpeedMetersPerSecond;
+    private final double maxRotationalVelocityRadiansPerSecond;
+
+    SpeedState(double maxTranslationalSpeedMetersPerSecond, double maxRotationalVelocityRadiansPerSecond) {
+      this.maxTranslationalSpeedMetersPerSecond = maxTranslationalSpeedMetersPerSecond;
+      this.maxRotationalVelocityRadiansPerSecond = maxRotationalVelocityRadiansPerSecond;
+    }
+
+    public double getMaxTranslationalSpeed() {
+      return maxTranslationalSpeedMetersPerSecond;
+    }
+
+    public double getMaxRotationalVelocity() {
+      return maxRotationalVelocityRadiansPerSecond;
+    }
+  }
+
+  // FRC 291: Added Speed State Variable
+  private SpeedState m_currentSpeedState = SpeedState.NORMAL;
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -87,7 +116,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
     try {
-      swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED, startingPose);
+      swerveDrive = new SwerveParser(directory).createSwerveDrive(YAGSLConstants.MAX_SPEED, startingPose);
       // Alternative method if you don't want to supply the conversion factor via JSON
       // files.
       // swerveDrive = new SwerveParser(directory).createSwerveDrive(maximumSpeed,
@@ -116,7 +145,11 @@ public class SwerveSubsystem extends SubsystemBase {
       swerveDrive.stopOdometryThread();
     }
     setupPathPlanner();
-    RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
+    // FRC 291: Removed To Prevent Redundant Zeroing Which Caused Inverted
+    // Robot Controls. Initial Pose Provided by Pathplanner.
+    // RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithAlliance));
+
+    this.setWantedSpeedState(m_currentSpeedState);
   }
 
   /**
@@ -128,7 +161,7 @@ public class SwerveSubsystem extends SubsystemBase {
   public SwerveSubsystem(SwerveDriveConfiguration driveCfg, SwerveControllerConfiguration controllerCfg) {
     swerveDrive = new SwerveDrive(driveCfg,
         controllerCfg,
-        Constants.MAX_SPEED,
+        YAGSLConstants.MAX_SPEED,
         new Pose2d(new Translation2d(Meter.of(2), Meter.of(0)),
             Rotation2d.fromDegrees(0)));
   }
@@ -147,6 +180,9 @@ public class SwerveSubsystem extends SubsystemBase {
       swerveDrive.updateOdometry();
       vision.updatePoseEstimation(swerveDrive);
     }
+
+    // FRC 291: Added SmartDashboard Output for Speed State
+    SmartDashboard.putString("Swerve Speed State", m_currentSpeedState.toString());
   }
 
   @Override
@@ -628,7 +664,7 @@ public class SwerveSubsystem extends SubsystemBase {
         headingX,
         headingY,
         getHeading().getRadians(),
-        Constants.MAX_SPEED);
+        YAGSLConstants.MAX_SPEED);
   }
 
   /**
@@ -648,7 +684,7 @@ public class SwerveSubsystem extends SubsystemBase {
         scaledInputs.getY(),
         angle.getRadians(),
         getHeading().getRadians(),
-        Constants.MAX_SPEED);
+        YAGSLConstants.MAX_SPEED);
   }
 
   /**
@@ -717,5 +753,13 @@ public class SwerveSubsystem extends SubsystemBase {
    */
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
+  }
+
+  // FRC 291: Added Speed State Function
+  public void setWantedSpeedState(SpeedState speedState) {
+    m_currentSpeedState = speedState;
+
+    swerveDrive.setMaximumAllowableSpeeds(m_currentSpeedState.maxTranslationalSpeedMetersPerSecond,
+        m_currentSpeedState.maxRotationalVelocityRadiansPerSecond);
   }
 }
