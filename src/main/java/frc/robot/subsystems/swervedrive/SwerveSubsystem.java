@@ -499,11 +499,11 @@ public class SwerveSubsystem extends SubsystemBase {
    *
    * @param translation   {@link Translation2d} that is the commanded linear
    *                      velocity of the robot, in meters per
-   *                      second. In robot-relative mode, positive x is torwards
+   *                      second. In robot-relative mode, positive x is towards
    *                      the bow (front) and positive y is
-   *                      torwards port (left). In field-relative mode, positive x
+   *                      towards port (left). In field-relative mode, positive x
    *                      is away from the alliance wall
-   *                      (field North) and positive y is torwards the left wall
+   *                      (field North) and positive y is towards the left wall
    *                      when looking through the driver station
    *                      glass (field West).
    * @param rotation      Robot angular rate, in radians per second. CCW positive.
@@ -621,7 +621,7 @@ public class SwerveSubsystem extends SubsystemBase {
    * This will zero (calibrate) the robot to assume the current position is facing
    * forward
    * <p>
-   * If red alliance rotate the robot 180 after the drviebase zero command
+   * If red alliance rotate the robot 180 after the drivebase zero command
    */
   public void zeroGyroWithAlliance() {
     if (isRedAlliance()) {

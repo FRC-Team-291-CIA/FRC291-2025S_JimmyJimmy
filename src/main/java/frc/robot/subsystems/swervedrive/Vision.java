@@ -197,7 +197,7 @@ public class Vision {
           bestTargetAmbiguity = ambiguity;
         }
       }
-      // ambiguity to high dont use estimate
+      // ambiguity to high do not use estimate
       if (bestTargetAmbiguity > maximumAmbiguity) {
         return Optional.empty();
       }
@@ -441,13 +441,13 @@ public class Vision {
       }
 
       PhotonPipelineResult bestResult = resultsList.get(0);
-      double amiguity = bestResult.getBestTarget().getPoseAmbiguity();
+      double ambiguity = bestResult.getBestTarget().getPoseAmbiguity();
       double currentAmbiguity = 0;
       for (PhotonPipelineResult result : resultsList) {
         currentAmbiguity = result.getBestTarget().getPoseAmbiguity();
-        if (currentAmbiguity < amiguity && currentAmbiguity > 0) {
+        if (currentAmbiguity < ambiguity && currentAmbiguity > 0) {
           bestResult = result;
-          amiguity = currentAmbiguity;
+          ambiguity = currentAmbiguity;
         }
       }
       return Optional.of(bestResult);

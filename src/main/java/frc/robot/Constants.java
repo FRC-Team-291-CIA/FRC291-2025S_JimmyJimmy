@@ -94,7 +94,7 @@ public final class Constants {
     // FRC 291: From Based Constants.java
     public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
     public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
-    public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms sprk max velocity lag
+    public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms spark max velocity lag
     public static final double MAX_SPEED = Units.feetToMeters(14.5);
 
     // FRC 291: From Based Constants.java in DrivebaseConstants class
@@ -168,14 +168,16 @@ public final class Constants {
     // Motor configuration for coral mechanism
     public static final int MOTOR_LEFT_CANID = 22;
     public static final MotorType MOTOR_LEFT_TYPE = MotorType.kBrushed;
+    public static final IdleMode MOTOR_LEFT_MODE = IdleMode.kBrake;
     public static final boolean MOTOR_LEFT_IS_INVERTED = false;
 
     public static final int MOTOR_RIGHT_CANID = 23;
     public static final MotorType MOTOR_RIGHT_TYPE = MotorType.kBrushed;
+    public static final IdleMode MOTOR_RIGHT_MODE = IdleMode.kBrake;
     public static final boolean MOTOR_RIGHT_IS_INVERTED = true;
 
     // Sensor configuration for coral intake detection
-    public static final int INTAKE_SENSOR_DIOPORT = 0;
+    public static final int INTAKE_SENSOR_DIO_PORT = 0;
     public static final boolean INTAKE_SENSOR_IS_INVERTED = true;
 
     // Manual control speeds for intake system
@@ -196,6 +198,7 @@ public final class Constants {
 
     public static final int MOTOR_CANID = 24;
     public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
+    public static final IdleMode MOTOR_MODE = IdleMode.kBrake;
     public static final boolean MOTOR_IS_INVERTED = false;
     public static final int MOTOR_SMART_CURRENT_LIMIT = 40;
     public static final double MOTOR_REVOLUTION_PER_INCH = 360;

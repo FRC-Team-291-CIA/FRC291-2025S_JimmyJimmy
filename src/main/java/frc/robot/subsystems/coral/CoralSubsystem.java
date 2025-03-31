@@ -41,17 +41,19 @@ public class CoralSubsystem extends SubsystemBase {
         // Configure left motor
         SparkMaxConfig leftConfig = new SparkMaxConfig();
         leftConfig
-                .inverted(CoralConstants.MOTOR_LEFT_IS_INVERTED); // Set inversion if needed
+                .inverted(CoralConstants.MOTOR_LEFT_IS_INVERTED) // Set inversion if needed
+                .idleMode(CoralConstants.MOTOR_LEFT_MODE);
         m_motorLeft.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Configure right motor to follow the left motor
         SparkMaxConfig rightConfig = new SparkMaxConfig();
         rightConfig
+                .idleMode(CoralConstants.MOTOR_RIGHT_MODE)
                 .follow(m_motorLeft, CoralConstants.MOTOR_RIGHT_IS_INVERTED); // Follow with optional inversion
         m_motorRight.configure(rightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         // Initialize digital sensor on DIO port
-        m_intakeSensor = new DigitalInput(CoralConstants.INTAKE_SENSOR_DIOPORT);
+        m_intakeSensor = new DigitalInput(CoralConstants.INTAKE_SENSOR_DIO_PORT);
 
         // Set default behavior of subsystem to stop the motor
         setDefaultCommand(run(this::stop).withName("DEFAULT: STOPPED"));

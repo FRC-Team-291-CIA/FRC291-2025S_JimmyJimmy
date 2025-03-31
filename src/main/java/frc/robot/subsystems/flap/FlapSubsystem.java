@@ -65,7 +65,8 @@ public class FlapSubsystem extends SubsystemBase {
 
         config
                 .inverted(FlapConstants.MOTOR_IS_INVERTED)
-                .smartCurrentLimit(FlapConstants.MOTOR_SMART_CURRENT_LIMIT);
+                .smartCurrentLimit(FlapConstants.MOTOR_SMART_CURRENT_LIMIT)
+                .idleMode(FlapConstants.MOTOR_MODE);
 
         // Set encoder to return angles in degrees (0–360)
         config.absoluteEncoder.positionConversionFactor(360);
