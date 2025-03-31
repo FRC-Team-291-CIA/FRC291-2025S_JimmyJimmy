@@ -33,11 +33,18 @@ public class LedSubsystem extends SubsystemBase {
     private Animation m_toAnimate;
 
     public enum DeviceLEDState {
-        OFF, RED, GREEN, BLUE, WHITE, YELLOW, CUSTOM
+        OFF,
+        RED,
+        GREEN,
+        BLUE,
+        ORANGE;
     }
 
     public enum StripAnimationState {
-        ColorFlow, Fire, Larson, Rainbow, RgbFade, SingleFade, Strobe, Twinkle, TwinkleOff, Empty
+        Fire,
+        Larson,
+        Rainbow,
+        Strobe;
     }
 
     private DeviceLEDState m_currentDeviceState;
@@ -52,6 +59,9 @@ public class LedSubsystem extends SubsystemBase {
         config.vBatOutputMode = VBatOutputMode.Modulated;
 
         m_candle.configAllSettings(config, 100);
+
+        this.setDeviceState(DeviceLEDState.ORANGE);
+        this.setStripState(StripAnimationState.Fire);
     }
 
     public void toggle5VOverride() {
@@ -116,14 +126,8 @@ public class LedSubsystem extends SubsystemBase {
             case BLUE:
                 m_candle.setLEDs(0, 0, 255, 0, DEVICE_LED_START, DEVICE_LED_COUNT);
                 break;
-            case WHITE:
-                m_candle.setLEDs(255, 255, 255, 0, DEVICE_LED_START, DEVICE_LED_COUNT);
-                break;
-            case YELLOW:
-                m_candle.setLEDs(255, 255, 0, 0, DEVICE_LED_START, DEVICE_LED_COUNT);
-                break;
-            case CUSTOM:
-                // Optional: expose custom RGB method if needed
+            case ORANGE:
+                m_candle.setLEDs(255, 165, 0, 0, DEVICE_LED_START, DEVICE_LED_COUNT);
                 break;
         }
 
@@ -135,10 +139,6 @@ public class LedSubsystem extends SubsystemBase {
         m_currentStripState = type;
 
         switch (type) {
-            case ColorFlow:
-                m_toAnimate = new ColorFlowAnimation(128, 20, 70, 0, 0.7, STRIP_LED_COUNT, Direction.Forward,
-                        STRIP_LED_START);
-                break;
             case Fire:
                 m_toAnimate = new FireAnimation(1, 0.3, STRIP_LED_COUNT, 0.4, 0, m_animDirection, STRIP_LED_START);
                 break;
@@ -149,25 +149,8 @@ public class LedSubsystem extends SubsystemBase {
             case Rainbow:
                 m_toAnimate = new RainbowAnimation(1, 0.7, STRIP_LED_COUNT, m_animDirection, STRIP_LED_START);
                 break;
-            case RgbFade:
-                m_toAnimate = new RgbFadeAnimation(0.7, 0.4, STRIP_LED_COUNT, STRIP_LED_START);
-                break;
-            case SingleFade:
-                m_toAnimate = new SingleFadeAnimation(50, 2, 200, 0, 0.5, STRIP_LED_COUNT, STRIP_LED_START);
-                break;
             case Strobe:
                 m_toAnimate = new StrobeAnimation(240, 10, 180, 0, 0.01, STRIP_LED_COUNT, STRIP_LED_START);
-                break;
-            case Twinkle:
-                m_toAnimate = new TwinkleAnimation(30, 70, 60, 0, 0.4, STRIP_LED_COUNT, TwinklePercent.Percent42,
-                        STRIP_LED_START);
-                break;
-            case TwinkleOff:
-                m_toAnimate = new TwinkleOffAnimation(70, 90, 175, 0, 0.2, STRIP_LED_COUNT, TwinkleOffPercent.Percent76,
-                        STRIP_LED_START);
-                break;
-            case Empty:
-                m_toAnimate = new RainbowAnimation(1, 0.7, STRIP_LED_COUNT, m_animDirection, STRIP_LED_START);
                 break;
         }
 
