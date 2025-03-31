@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 //import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.YAGSLConstants;
+import frc.robot.Constants.CodeConstants;
 import frc.robot.Constants.SwerveConstants;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
@@ -114,7 +115,14 @@ public class SwerveSubsystem extends SubsystemBase {
             Rotation2d.fromDegrees(180));
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary
     // objects being created.
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    switch (CodeConstants.CODE_MODE) {
+      case COMPETITION:
+        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.NONE;
+        break;
+      case PRACTICE:
+        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+        break;
+    }
     try {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(YAGSLConstants.MAX_SPEED, startingPose);
       // Alternative method if you don't want to supply the conversion factor via JSON
