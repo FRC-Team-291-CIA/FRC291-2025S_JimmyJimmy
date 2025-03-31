@@ -17,6 +17,8 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -131,20 +133,35 @@ public class RobotContainer {
                         .translationHeadingOffset(Rotation2d.fromDegrees(
                                         0));
 
+        SendableChooser<Command> m_chooser = new SendableChooser<>();
+
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
-                RobotModeTriggers.teleop()
-                                .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
+                NamedCommands.registerCommand("Coral Intake", new IntakeCoralCommand(m_coral));
+                NamedCommands.registerCommand("Score Level Four",
+                                new AutoScoreCoralCommand(m_coral, m_elevator, ElevatorState.CORAL_LEVEL_FOUR));
+                NamedCommands.registerCommand("Score Level Three",
+                                new AutoScoreCoralCommand(m_coral, m_elevator, ElevatorState.CORAL_LEVEL_THREE));
+                NamedCommands.registerCommand("Score Level Two",
+                                new AutoScoreCoralCommand(m_coral, m_elevator, ElevatorState.CORAL_LEVEL_TWO));
 
-                RobotModeTriggers.autonomous()
-                                .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
+                m_chooser.setDefaultOption("DO NOTHING", Commands.none());
+                m_chooser.addOption("Left Two Auto", m_drivebase.getAutonomousCommand("Left Two Auto"));
+                m_chooser.addOption("Center G One Auto", m_drivebase.getAutonomousCommand("Center G One Auto"));
+                m_chooser.addOption("Center H One Auto Level Three",
+                                m_drivebase.getAutonomousCommand("Center H One Auto Level Three"));
+
+                SmartDashboard.putData(m_chooser);
 
                 // Configure the trigger bindings
                 configureBindings();
+                RobotModeTriggers.teleop()
+                                .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
+                RobotModeTriggers.autonomous()
+                                .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
                 DriverStation.silenceJoystickConnectionWarning(true);
-                NamedCommands.registerCommand("test", Commands.print("I EXIST"));
         }
 
         /**
@@ -321,7 +338,7 @@ public class RobotContainer {
          */
         public Command getAutonomousCommand() {
                 // An example command will be run in autonomous
-                return m_drivebase.getAutonomousCommand("New Auto");
+                return m_chooser.getSelected();
         }
 
         public void setMotorBrake(boolean brake) {
