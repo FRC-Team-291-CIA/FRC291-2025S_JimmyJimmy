@@ -141,4 +141,41 @@ public class FlapSubsystem extends SubsystemBase {
             }
         }
     }
+
+    // FRC 291: Add Shift Toggles for Speed
+    public void stateShiftUp() {
+        switch (m_currentFlapState) {
+            case UP:
+                // Speed at Max. Do Nothing.
+                break;
+            case LEVEL:
+                this.setWantedState(FlapState.UP);
+                break;
+            case DOWN:
+                this.setWantedState(FlapState.LEVEL);
+                break;
+            case DISABLED:
+                // If Disabled Assumed in Down State
+                this.setWantedState(FlapState.LEVEL);
+                break;
+        }
+    }
+
+    public void stateShiftDown() {
+        switch (m_currentFlapState) {
+            case UP:
+                this.setWantedState(FlapState.LEVEL);
+                break;
+            case LEVEL:
+                this.setWantedState(FlapState.DOWN);
+                break;
+            case DOWN:
+                // Speed at Min. Do Nothing.
+                break;
+            case DISABLED:
+                // If Disabled Assumed in Down State
+                this.setWantedState(FlapState.LEVEL);
+                break;
+        }
+    }
 }

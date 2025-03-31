@@ -770,4 +770,39 @@ public class SwerveSubsystem extends SubsystemBase {
     swerveDrive.setMaximumAllowableSpeeds(m_currentSpeedState.maxTranslationalSpeedMetersPerSecond,
         m_currentSpeedState.maxRotationalVelocityRadiansPerSecond);
   }
+
+  // FRC 291: Add Shift Toggles for Speed
+  public void speedShiftUp() {
+    switch (m_currentSpeedState) {
+      case FAST:
+        // Speed at Max. Do Nothing.
+        break;
+      case NORMAL:
+        this.setWantedSpeedState(SpeedState.FAST);
+        break;
+      case SLOW:
+        this.setWantedSpeedState(SpeedState.SLOW);
+        break;
+      case VERY_SLOW:
+        this.setWantedSpeedState(SpeedState.VERY_SLOW);
+        break;
+    }
+  }
+
+  public void speedShiftDown() {
+    switch (m_currentSpeedState) {
+      case FAST:
+        this.setWantedSpeedState(SpeedState.NORMAL);
+        break;
+      case NORMAL:
+        this.setWantedSpeedState(SpeedState.SLOW);
+        break;
+      case SLOW:
+        this.setWantedSpeedState(SpeedState.VERY_SLOW);
+        break;
+      case VERY_SLOW:
+        // Speed at Min. Do Nothing.
+        break;
+    }
+  }
 }
