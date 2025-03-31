@@ -90,8 +90,16 @@ public class FlapSubsystem extends SubsystemBase {
         m_flapAngle = m_encoder.getPosition();
 
         // Set default command to hold current state
-        setDefaultCommand(run(() -> setWantedState(m_currentFlapState))
-                .withName("DEFAULT: " + m_currentFlapState.toString()));
+        switch (FlapConstants.FLAP_CONTROL_MODE) {
+            case ANGLE:
+                setDefaultCommand(run(() -> setWantedState(m_currentFlapState))
+                        .withName("DEFAULT: " + m_currentFlapState.toString()));
+                break;
+            case MANUAL:
+                setDefaultCommand(run(() -> setWantedState(FlapState.DISABLED))
+                        .withName("DEFAULT: " + FlapState.DISABLED.toString()));
+                break;
+        }
     }
 
     @Override

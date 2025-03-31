@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import com.pathplanner.lib.auto.NamedCommands;
@@ -29,9 +30,11 @@ import swervelib.SwerveInputStream;
 
 import frc.robot.Constants.ControllerDriverConstants;
 import frc.robot.Constants.ControllerOperatorConstants;
+import frc.robot.Constants.FlapConstants;
 import frc.robot.Constants.YAGSLConstants;
-
+import frc.robot.Constants.FlapConstants.FlapControlMode;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem.SpeedState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.elevator.ElevatorSubsystem.ElevatorState;
 import frc.robot.subsystems.coral.CoralSubsystem;
@@ -39,7 +42,7 @@ import frc.robot.subsystems.flap.FlapSubsystem;
 import frc.robot.subsystems.flap.FlapSubsystem.FlapState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.led.LedSubsystem;
-
+import frc.robot.subsystems.led.LedSubsystem.StripAnimationState;
 import frc.robot.commands.AlgaeFlapCommand;
 import frc.robot.commands.AutoScoreCoralCommand;
 import frc.robot.commands.IntakeCoralCommand;
@@ -132,6 +135,12 @@ public class RobotContainer {
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
+                RobotModeTriggers.teleop()
+                                .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
+
+                RobotModeTriggers.autonomous()
+                                .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
+
                 // Configure the trigger bindings
                 configureBindings();
                 DriverStation.silenceJoystickConnectionWarning(true);
@@ -199,41 +208,110 @@ public class RobotContainer {
                                         .whileTrue(Commands.runEnd(
                                                         () -> driveDirectAngleKeyboard.driveToPoseEnabled(true),
                                                         () -> driveDirectAngleKeyboard.driveToPoseEnabled(false)));
-
-                        // driverXbox.b().whileTrue(
-                        // drivebase.driveToPose(
-                        // new Pose2d(new Translation2d(4, 4), Rotation2d.fromDegrees(0)))
-                        // );
-
-                }
-                if (DriverStation.isTest()) {
-                        m_drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity); // Overrides drive command
-                                                                                           // above!
-
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_X)
-                                        .whileTrue(Commands.runOnce(m_drivebase::lock, m_drivebase).repeatedly());
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_Y)
-                                        .whileTrue(m_drivebase.driveToDistanceCommand(1.0, 0.2));
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_START)
-                                        .onTrue((Commands.runOnce(m_drivebase::zeroGyro)));
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_BACK)
-                                        .whileTrue(m_drivebase.centerModulesCommand());
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_TOP_LEFT)
-                                        .onTrue(Commands.none());
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_TOP_RIGHT)
-                                        .onTrue(Commands.none());
-                } else {
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_A)
-                                        .onTrue((Commands.runOnce(m_drivebase::zeroGyro)));
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_X)
-                                        .onTrue(Commands.runOnce(m_drivebase::addFakeVisionReading));
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_START).whileTrue(Commands.none());
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_BACK)
-                                        .whileTrue(Commands.runOnce(m_drivebase::lock, m_drivebase).repeatedly());
-                        m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_TOP_RIGHT)
-                                        .onTrue(Commands.none());
                 }
 
+                // ===== Swerve =====
+                // === Driver Controller ===
+                m_controllerDriver.button(ControllerDriverConstants.BUTTON_A)
+                                .onTrue(Commands.runOnce(m_drivebase::zeroGyro));
+
+                m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_TOP_LEFT)
+                                .onTrue(Commands.runOnce(m_drivebase::speedShiftDown));
+
+                m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_TOP_RIGHT)
+                                .onTrue(Commands.runOnce(m_drivebase::speedShiftDown));
+
+                // ===== Elevator =====
+                // === Driver Controller ===
+                m_controllerDriver.button(ControllerDriverConstants.BUTTON_JOYSTICK_RIGHT)
+                                .onTrue(Commands.parallel(
+                                                Commands.runOnce(() -> m_elevator
+                                                                .setGoalState(ElevatorState.CORAL_INTAKE)),
+                                                Commands.runOnce(() -> m_drivebase
+                                                                .setWantedSpeedState(SpeedState.NORMAL)),
+                                                Commands.runOnce(() -> m_led.setStripState(StripAnimationState.Fire))));
+
+                // === Operator Controller ===
+                m_controllerOperator.button(ControllerOperatorConstants.BUTTON_A)
+                                .onTrue(Commands.parallel(
+                                                Commands.runOnce(() -> m_elevator
+                                                                .setGoalState(ElevatorState.CORAL_INTAKE)),
+                                                Commands.runOnce(() -> m_drivebase
+                                                                .setWantedSpeedState(SpeedState.NORMAL)),
+                                                Commands.runOnce(() -> m_led.setStripState(StripAnimationState.Fire))));
+
+                m_controllerOperator.button(ControllerOperatorConstants.BUTTON_B)
+                                .onTrue(Commands.parallel(
+                                                Commands.runOnce(() -> m_elevator
+                                                                .setGoalState(ElevatorState.CORAL_LEVEL_TWO)),
+                                                Commands.runOnce(() -> m_drivebase
+                                                                .setWantedSpeedState(SpeedState.SLOW)),
+                                                Commands.runOnce(() -> m_led
+                                                                .setStripState(StripAnimationState.Rainbow))));
+
+                m_controllerOperator.button(ControllerOperatorConstants.BUTTON_Y)
+                                .onTrue(Commands.parallel(
+                                                Commands.runOnce(() -> m_elevator
+                                                                .setGoalState(ElevatorState.CORAL_LEVEL_THREE)),
+                                                Commands.runOnce(() -> m_drivebase
+                                                                .setWantedSpeedState(SpeedState.SLOW)),
+                                                Commands.runOnce(() -> m_led
+                                                                .setStripState(StripAnimationState.Rainbow))));
+
+                m_controllerOperator.button(ControllerOperatorConstants.BUTTON_X)
+                                .onTrue(Commands.parallel(
+                                                Commands.runOnce(() -> m_elevator
+                                                                .setGoalState(ElevatorState.CORAL_LEVEL_FOUR)),
+                                                Commands.runOnce(() -> m_drivebase
+                                                                .setWantedSpeedState(SpeedState.SLOW)),
+                                                Commands.runOnce(() -> m_led
+                                                                .setStripState(StripAnimationState.Rainbow))));
+
+                // ===== Coral =====
+                // === Operator Controller ===
+                m_controllerOperator.button(ControllerOperatorConstants.BUTTON_BUMPER_TOP_LEFT)
+                                .whileTrue(new IntakeCoralCommand(m_coral));
+
+                m_controllerOperator.button(ControllerOperatorConstants.BUTTON_BUMPER_TOP_RIGHT)
+                                .whileTrue(m_coral.manualForwardFastCommand());
+
+                m_controllerOperator.pov(0)
+                                .whileTrue(m_coral.manualForwardSlowCommand());
+
+                m_controllerOperator.pov(180)
+                                .whileTrue(m_coral.manualReverseSlowCommand());
+                // ===== Flap =====
+                // === Operator Controller ===
+                switch (FlapConstants.FLAP_CONTROL_MODE) {
+                        case ANGLE:
+                                m_controllerOperator.button(ControllerOperatorConstants.BUTTON_BUMPER_BOTTOM_LEFT)
+                                                .onTrue(Commands.runOnce(m_flap::stateShiftDown));
+
+                                m_controllerOperator.button(ControllerOperatorConstants.BUTTON_BUMPER_BOTTOM_RIGHT)
+                                                .onTrue(Commands.runOnce(m_flap::stateShiftUp));
+                                break;
+                        case MANUAL:
+                                m_controllerOperator.button(ControllerOperatorConstants.BUTTON_BUMPER_BOTTOM_LEFT)
+                                                .whileTrue(Commands.run(() -> m_flap.setWantedState(FlapState.DOWN)));
+
+                                m_controllerOperator.button(ControllerOperatorConstants.BUTTON_BUMPER_BOTTOM_RIGHT)
+                                                .whileTrue(Commands.run(() -> m_flap.setWantedState(FlapState.UP)));
+                                break;
+                }
+
+                // ===== Climber =====
+                // === Driver Controller ===
+                m_controllerOperator.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_LEFT)
+                                .whileTrue(Commands.run(() -> m_climber.climbUp()));
+
+                m_controllerOperator.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_RIGHT)
+                                .whileTrue(Commands.run(() -> m_climber.climbDown()));
+                // === Operator Controller ===
+                m_controllerOperator.pov(90)
+                                .whileTrue(Commands.run(() -> m_climber.climbUp()));
+
+                m_controllerOperator.pov(270)
+                                .whileTrue(Commands.run(() -> m_climber.climbDown()));
         }
 
         /**
