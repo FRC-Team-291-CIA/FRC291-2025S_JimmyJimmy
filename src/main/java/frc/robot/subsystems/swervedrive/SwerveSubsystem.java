@@ -767,6 +767,8 @@ public class SwerveSubsystem extends SubsystemBase {
   public void setWantedSpeedState(SpeedState speedState) {
     m_currentSpeedState = speedState;
 
+    System.out.println("Speed State: " + m_currentSpeedState.toString());
+
     swerveDrive.setMaximumAllowableSpeeds(m_currentSpeedState.maxTranslationalSpeedMetersPerSecond,
         m_currentSpeedState.maxRotationalVelocityRadiansPerSecond);
   }
@@ -781,10 +783,10 @@ public class SwerveSubsystem extends SubsystemBase {
         this.setWantedSpeedState(SpeedState.FAST);
         break;
       case SLOW:
-        this.setWantedSpeedState(SpeedState.SLOW);
+        this.setWantedSpeedState(SpeedState.NORMAL);
         break;
       case VERY_SLOW:
-        this.setWantedSpeedState(SpeedState.VERY_SLOW);
+        this.setWantedSpeedState(SpeedState.SLOW);
         break;
     }
   }

@@ -222,7 +222,7 @@ public final class Constants {
     public static final int MOTOR_CANID = 25;
     public static final MotorType MOTOR_TYPE = MotorType.kBrushless;
     public static final IdleMode MOTOR_MODE = IdleMode.kBrake;
-    public static final boolean MOTOR_IS_INVERTED = true;
+    public static final boolean MOTOR_IS_INVERTED = false;
     public static final int MOTOR_SMART_CURRENT_LIMIT = 40;
 
     public static final double SPEED_IN = 1;
