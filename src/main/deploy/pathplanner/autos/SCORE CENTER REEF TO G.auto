@@ -7,7 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "CENTER REEF TO G"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Level Three"
           }
         }
       ]
