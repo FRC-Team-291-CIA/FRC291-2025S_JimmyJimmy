@@ -3,14 +3,17 @@ package frc.robot.subsystems.led;
 // WPILib
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.ctre.phoenix.led.Animation;
+import com.ctre.phoenix.led.CANdle;
 // CTRE Phoenix CANdle LED Library
-import com.ctre.phoenix.led.*;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdle.VBatOutputMode;
-import com.ctre.phoenix.led.ColorFlowAnimation.Direction;
+import com.ctre.phoenix.led.CANdleConfiguration;
+import com.ctre.phoenix.led.FireAnimation;
+import com.ctre.phoenix.led.LarsonAnimation;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
-import com.ctre.phoenix.led.TwinkleAnimation.TwinklePercent;
-import com.ctre.phoenix.led.TwinkleOffAnimation.TwinkleOffPercent;
+import com.ctre.phoenix.led.RainbowAnimation;
+import com.ctre.phoenix.led.StrobeAnimation;
 
 // Project constants
 import frc.robot.Constants.LedConstants;
@@ -27,7 +30,7 @@ public class LedSubsystem extends SubsystemBase {
     private final int m_candleChannel = 0;
 
     private boolean m_last5V = false;
-    private boolean m_animDirection = false;
+    private boolean m_animDirection = true;
     private boolean m_stripInManualColorMode = false;
 
     private Animation m_toAnimate;
@@ -140,7 +143,7 @@ public class LedSubsystem extends SubsystemBase {
 
         switch (type) {
             case Fire:
-                m_toAnimate = new FireAnimation(1, 0.3, STRIP_LED_COUNT, 0.4, 0, m_animDirection, STRIP_LED_START);
+                m_toAnimate = new FireAnimation(1, 0.15, STRIP_LED_COUNT, 0.3, 0, m_animDirection, STRIP_LED_START);
                 break;
             case Larson:
                 m_toAnimate = new LarsonAnimation(255, 95, 31, 0, 0.25, STRIP_LED_COUNT, BounceMode.Front, 3,
