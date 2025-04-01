@@ -236,7 +236,7 @@ public class RobotContainer {
                                 .onTrue(Commands.runOnce(m_drivebase::speedShiftDown));
 
                 m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_TOP_RIGHT)
-                                .onTrue(Commands.runOnce(m_drivebase::speedShiftDown));
+                                .onTrue(Commands.runOnce(m_drivebase::speedShiftUp));
 
                 // ===== Elevator =====
                 // === Driver Controller ===

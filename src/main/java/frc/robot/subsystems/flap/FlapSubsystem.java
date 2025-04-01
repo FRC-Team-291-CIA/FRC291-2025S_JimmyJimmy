@@ -96,7 +96,7 @@ public class FlapSubsystem extends SubsystemBase {
                         .withName("DEFAULT: " + m_currentFlapState.toString()));
                 break;
             case MANUAL:
-                setDefaultCommand(run(() -> setWantedState(FlapState.DISABLED))
+                setDefaultCommand(run(() -> m_motor.stopMotor())
                         .withName("DEFAULT: " + FlapState.DISABLED.toString()));
                 break;
         }
@@ -154,7 +154,7 @@ public class FlapSubsystem extends SubsystemBase {
     public void stateShiftUp() {
         switch (m_currentFlapState) {
             case UP:
-                // Speed at Max. Do Nothing.
+                // State at Max. Do Nothing.
                 break;
             case LEVEL:
                 this.setWantedState(FlapState.UP);
@@ -178,7 +178,7 @@ public class FlapSubsystem extends SubsystemBase {
                 this.setWantedState(FlapState.DOWN);
                 break;
             case DOWN:
-                // Speed at Min. Do Nothing.
+                // State at Min. Do Nothing.
                 break;
             case DISABLED:
                 // If Disabled Assumed in Down State
