@@ -1,0 +1,50 @@
+<xml version="1.0">
+<dashboard>
+	<widget field="Pigeon 2 (v6) [18]" type="Gyro" class="edu.wpi.first.smartdashboard.gui.elements.Compass">
+		<location x="0" y="300"/>
+	</widget>
+	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
+		<location x="0" y="210"/>
+	</widget>
+	<widget field="Elevator: Motor Mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="189"/>
+	</widget>
+	<widget field="Climber Motor Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="168"/>
+	</widget>
+	<widget field="Coral Intake Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="147"/>
+	</widget>
+	<widget field="Elevator: Current Height" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="126"/>
+	</widget>
+	<widget field="Elevator: Right Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="105"/>
+	</widget>
+	<widget field="Elevator: State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="84"/>
+	</widget>
+	<widget field="Elevator: Left Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="63"/>
+	</widget>
+	<widget field="Flap Angle:" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="42"/>
+	</widget>
+	<widget field="Elevator: Goal Height" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="21"/>
+	</widget>
+	<widget field="Swerve Speed State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
+		<location x="0" y="0"/>
+	</widget>
+</dashboard>
+<live-window>
+</live-window>
+	<hidden field="IMU"/>
+	<hidden field="Field"/>
+	<hidden field="Swerve Drive"/>
+	<hidden field="Motors"/>
+	<hidden field="JSON"/>
+	<hidden field="Alerts"/>
+	<hidden field="PathPlanner"/>
+	<hidden field="Encoders"/>
+</xml>
