@@ -115,11 +115,11 @@ public final class Constants {
   }
 
   public static final class SwerveConstants {
-    public static final double SPEED_FAST_MAX_TRANSITIONAL = 25.00;
-    public static final double SPEED_FAST_MAX_ROTATIONAL = 8.00;
+    public static final double SPEED_FAST_MAX_TRANSITIONAL = 30.00;
+    public static final double SPEED_FAST_MAX_ROTATIONAL = 10.00;
 
-    public static final double SPEED_NORMAL_MAX_TRANSITIONAL = 20.00;
-    public static final double SPEED_NORMAL_MAX_ROTATIONAL = 6.0;
+    public static final double SPEED_NORMAL_MAX_TRANSITIONAL = 25.00;
+    public static final double SPEED_NORMAL_MAX_ROTATIONAL = 8.0;
 
     public static final double SPEED_SLOW_MAX_TRANSITIONAL = 4.00;
     public static final double SPEED_SLOW_MAX_ROTATIONAL = 3.00;

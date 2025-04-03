@@ -350,10 +350,10 @@ public class RobotContainer {
 
                 // ===== Climber =====
                 // === Driver Controller ===
-                m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_LEFT)
+                m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_RIGHT)
                                 .whileTrue(Commands.run(() -> m_climber.climbUp()));
 
-                m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_RIGHT)
+                m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_LEFT)
                                 .whileTrue(Commands.run(() -> m_climber.climbDown()));
                 // === Operator Controller ===
                 m_controllerOperator.pov(90)
