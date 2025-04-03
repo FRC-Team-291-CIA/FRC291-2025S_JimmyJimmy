@@ -184,12 +184,18 @@ public class RobotContainer {
                 configureBindings();
                 RobotModeTriggers.teleop()
                                 .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
+                RobotModeTriggers.teleop()
+                                .onTrue(Commands.runOnce(() -> DogLog.setEnabled(true)));
                 RobotModeTriggers.autonomous()
                                 .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
+                RobotModeTriggers.autonomous()
+                                .onTrue(Commands.runOnce(() -> DogLog.setEnabled(true)));
                 RobotModeTriggers.disabled()
                                 .onTrue(Commands.runOnce(() -> m_led.setStripState(StripAnimationState.Fire)));
                 RobotModeTriggers.disabled()
                                 .onTrue(Commands.runOnce(() -> m_led.setDeviceState(DeviceLEDState.ORANGE)));
+                RobotModeTriggers.disabled()
+                                .onTrue(Commands.runOnce(() -> DogLog.setEnabled(false)));
                 DriverStation.silenceJoystickConnectionWarning(true);
 
                 new Trigger(m_drivebase.onFastSelected())
