@@ -51,6 +51,9 @@ import frc.robot.commands.IntakeCoralCommand;
 
 import frc.robot.Constants.CodeConstants;
 
+import dev.doglog.DogLog;
+import dev.doglog.DogLogOptions;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very
@@ -143,6 +146,8 @@ public class RobotContainer {
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
+                DogLog.setOptions(new DogLogOptions().withCaptureNt(true));
+
                 switch (CodeConstants.DEV_CONTROLLER_MODE) {
                         case ON:
                                 m_controllerDeveloper = new CommandJoystick(2);
