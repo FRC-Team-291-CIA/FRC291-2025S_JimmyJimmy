@@ -34,7 +34,6 @@ import frc.robot.Constants.ControllerDriverConstants;
 import frc.robot.Constants.ControllerOperatorConstants;
 import frc.robot.Constants.FlapConstants;
 import frc.robot.Constants.YAGSLConstants;
-import frc.robot.Constants.FlapConstants.FlapControlMode;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem.SpeedState;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -44,10 +43,13 @@ import frc.robot.subsystems.flap.FlapSubsystem;
 import frc.robot.subsystems.flap.FlapSubsystem.FlapState;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.led.LedSubsystem;
+import frc.robot.subsystems.led.LedSubsystem.DeviceLEDState;
 import frc.robot.subsystems.led.LedSubsystem.StripAnimationState;
 import frc.robot.commands.AlgaeFlapCommand;
 import frc.robot.commands.AutoScoreCoralCommand;
 import frc.robot.commands.IntakeCoralCommand;
+
+import frc.robot.Constants.CodeConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -60,6 +62,7 @@ import frc.robot.commands.IntakeCoralCommand;
 public class RobotContainer {
         final CommandJoystick m_controllerDriver = new CommandJoystick(ControllerDriverConstants.JOYSTICK_PORT);
         final CommandJoystick m_controllerOperator = new CommandJoystick(ControllerOperatorConstants.JOYSTICK_PORT);
+        CommandJoystick m_controllerDeveloper;
 
         // The robot's subsystems and commands are defined here...
         private final SwerveSubsystem m_drivebase = new SwerveSubsystem(
@@ -79,7 +82,8 @@ public class RobotContainer {
                         () -> m_controllerDriver.getRawAxis(ControllerDriverConstants.AXIS_LEFT_Y) * -1,
                         () -> m_controllerDriver.getRawAxis(ControllerDriverConstants.AXIS_LEFT_X) * -1)
                         .withControllerRotationAxis(
-                                        () -> m_controllerDriver.getRawAxis(ControllerDriverConstants.AXIS_RIGHT_X))
+                                        () -> m_controllerDriver.getRawAxis(ControllerDriverConstants.AXIS_RIGHT_X)
+                                                        * -1)
                         .deadband(YAGSLConstants.DEADBAND)
                         .scaleTranslation(0.8)
                         .allianceRelativeControl(true);
@@ -139,6 +143,15 @@ public class RobotContainer {
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
+                switch (CodeConstants.DEV_CONTROLLER_MODE) {
+                        case ON:
+                                m_controllerDeveloper = new CommandJoystick(2);
+                                break;
+                        case OFF:
+
+                                break;
+
+                }
                 NamedCommands.registerCommand("Coral Intake", new IntakeCoralCommand(m_coral));
                 NamedCommands.registerCommand("Score Level Four",
                                 new AutoScoreCoralCommand(m_coral, m_elevator, ElevatorState.CORAL_LEVEL_FOUR));
@@ -147,12 +160,19 @@ public class RobotContainer {
                 NamedCommands.registerCommand("Score Level Two",
                                 new AutoScoreCoralCommand(m_coral, m_elevator, ElevatorState.CORAL_LEVEL_TWO));
 
-                m_chooser.setDefaultOption("DO NOTHING", Commands.none());
-                m_chooser.addOption("Left Two Auto", m_drivebase.getAutonomousCommand("Left Two Auto"));
-                m_chooser.addOption("Center G One Auto", m_drivebase.getAutonomousCommand("Center G One Auto"));
-                m_chooser.addOption("Center H One Auto Level Three",
-                                m_drivebase.getAutonomousCommand("Center H One Auto Level Three"));
+                NamedCommands.registerCommand("Algae Flap Command",
+                                new AlgaeFlapCommand(m_elevator, m_flap, m_drivebase, ElevatorState.CORAL_LEVEL_TWO));
 
+                m_chooser.setDefaultOption("DO NOTHING", Commands.none());
+                m_chooser.addOption("FORWARD ONLY", m_drivebase.getAutonomousCommand("FORWARD ONLY"));
+                m_chooser.addOption("SCORE CENTER REEF TO G",
+                                m_drivebase.getAutonomousCommand("SCORE CENTER REEF TO G"));
+                m_chooser.addOption("SCORE CENTER REEF TO H",
+                                m_drivebase.getAutonomousCommand("SCORE CENTER REEF TO H"));
+                m_chooser.addOption("ALGAE CENTER REEF TO H",
+                                m_drivebase.getAutonomousCommand("ALGAE CENTER REEF TO H"));
+                m_chooser.addOption("ALGAE CENTER REEF TO G",
+                                m_drivebase.getAutonomousCommand("ALGAE CENTER REEF TO G"));
                 SmartDashboard.putData(m_chooser);
 
                 // Configure the trigger bindings
@@ -161,7 +181,26 @@ public class RobotContainer {
                                 .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
                 RobotModeTriggers.autonomous()
                                 .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
+                RobotModeTriggers.disabled()
+                                .onTrue(Commands.runOnce(() -> m_led.setStripState(StripAnimationState.Fire)));
+                RobotModeTriggers.disabled()
+                                .onTrue(Commands.runOnce(() -> m_led.setDeviceState(DeviceLEDState.ORANGE)));
                 DriverStation.silenceJoystickConnectionWarning(true);
+
+                new Trigger(m_drivebase.onFastSelected())
+                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(0, 0, 255)));
+
+                new Trigger(m_drivebase.onNormalSelected())
+                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(0, 255, 0)));
+
+                new Trigger(m_drivebase.onSlowSelected())
+                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(255, 255, 0)));
+
+                new Trigger(m_drivebase.onVerySlowSelected())
+                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(255, 0, 0)));
+
+                SmartDashboard.putData("Flap Command", m_flap);
+                SmartDashboard.putData("Coral Command", m_coral);
         }
 
         /**
@@ -196,7 +235,8 @@ public class RobotContainer {
                                 driveDirectAngleKeyboard);
 
                 if (RobotBase.isSimulation()) {
-                        m_drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+                        // m_drivebase.setDefaultCommand(driveFieldOrientedDirectAngleKeyboard);
+                        m_drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
                 } else {
                         m_drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
                 }
@@ -245,8 +285,7 @@ public class RobotContainer {
                                                 Commands.runOnce(() -> m_elevator
                                                                 .setGoalState(ElevatorState.CORAL_INTAKE)),
                                                 Commands.runOnce(() -> m_drivebase
-                                                                .setWantedSpeedState(SpeedState.NORMAL)),
-                                                Commands.runOnce(() -> m_led.setStripState(StripAnimationState.Fire))));
+                                                                .setWantedSpeedState(SpeedState.NORMAL))));
 
                 // === Operator Controller ===
                 m_controllerOperator.button(ControllerOperatorConstants.BUTTON_A)
@@ -254,35 +293,28 @@ public class RobotContainer {
                                                 Commands.runOnce(() -> m_elevator
                                                                 .setGoalState(ElevatorState.CORAL_INTAKE)),
                                                 Commands.runOnce(() -> m_drivebase
-                                                                .setWantedSpeedState(SpeedState.NORMAL)),
-                                                Commands.runOnce(() -> m_led.setStripState(StripAnimationState.Fire))));
+                                                                .setWantedSpeedState(SpeedState.NORMAL))));
 
                 m_controllerOperator.button(ControllerOperatorConstants.BUTTON_B)
                                 .onTrue(Commands.parallel(
                                                 Commands.runOnce(() -> m_elevator
                                                                 .setGoalState(ElevatorState.CORAL_LEVEL_TWO)),
                                                 Commands.runOnce(() -> m_drivebase
-                                                                .setWantedSpeedState(SpeedState.SLOW)),
-                                                Commands.runOnce(() -> m_led
-                                                                .setStripState(StripAnimationState.Rainbow))));
+                                                                .setWantedSpeedState(SpeedState.SLOW))));
 
                 m_controllerOperator.button(ControllerOperatorConstants.BUTTON_Y)
                                 .onTrue(Commands.parallel(
                                                 Commands.runOnce(() -> m_elevator
                                                                 .setGoalState(ElevatorState.CORAL_LEVEL_THREE)),
                                                 Commands.runOnce(() -> m_drivebase
-                                                                .setWantedSpeedState(SpeedState.SLOW)),
-                                                Commands.runOnce(() -> m_led
-                                                                .setStripState(StripAnimationState.Rainbow))));
+                                                                .setWantedSpeedState(SpeedState.SLOW))));
 
                 m_controllerOperator.button(ControllerOperatorConstants.BUTTON_X)
                                 .onTrue(Commands.parallel(
                                                 Commands.runOnce(() -> m_elevator
                                                                 .setGoalState(ElevatorState.CORAL_LEVEL_FOUR)),
                                                 Commands.runOnce(() -> m_drivebase
-                                                                .setWantedSpeedState(SpeedState.SLOW)),
-                                                Commands.runOnce(() -> m_led
-                                                                .setStripState(StripAnimationState.Rainbow))));
+                                                                .setWantedSpeedState(SpeedState.SLOW))));
 
                 // ===== Coral =====
                 // === Operator Controller ===
@@ -318,10 +350,10 @@ public class RobotContainer {
 
                 // ===== Climber =====
                 // === Driver Controller ===
-                m_controllerOperator.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_LEFT)
+                m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_LEFT)
                                 .whileTrue(Commands.run(() -> m_climber.climbUp()));
 
-                m_controllerOperator.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_RIGHT)
+                m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_RIGHT)
                                 .whileTrue(Commands.run(() -> m_climber.climbDown()));
                 // === Operator Controller ===
                 m_controllerOperator.pov(90)
@@ -329,6 +361,23 @@ public class RobotContainer {
 
                 m_controllerOperator.pov(270)
                                 .whileTrue(Commands.run(() -> m_climber.climbDown()));
+
+                switch (CodeConstants.DEV_CONTROLLER_MODE) {
+                        case ON:
+                                m_controllerDeveloper.button(2)
+                                                .onTrue(Commands.runOnce(
+                                                                () -> m_elevator.setGoalState(ElevatorState.TEST)));
+
+                                m_controllerDeveloper.button(5)
+                                                .onTrue(Commands.runOnce(() -> m_elevator.decreaseTestHeight()));
+
+                                m_controllerDeveloper.button(6)
+                                                .onTrue(Commands.runOnce(() -> m_elevator.increaseTestHeight()));
+
+                                break;
+                        case OFF:
+                                break;
+                }
         }
 
         /**

@@ -1,40 +1,44 @@
 <xml version="1.0">
 <dashboard>
+	<static-widget class="edu.wpi.first.smartdashboard.gui.elements.ConnectionIndicator">
+		<location x="0" y="0"/>
+		<width>643</width>
+	</static-widget>
 	<widget field="Pigeon 2 (v6) [18]" type="Gyro" class="edu.wpi.first.smartdashboard.gui.elements.Compass">
-		<location x="0" y="300"/>
+		<location x="192" y="187"/>
 	</widget>
 	<widget field="SendableChooser[0]" type="String Chooser" class="edu.wpi.first.smartdashboard.gui.elements.Chooser">
-		<location x="0" y="210"/>
+		<location x="3" y="40"/>
 	</widget>
 	<widget field="Elevator: Motor Mode" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="189"/>
+		<location x="451" y="61"/>
 	</widget>
 	<widget field="Climber Motor Current" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="168"/>
+		<location x="221" y="119"/>
 	</widget>
 	<widget field="Coral Intake Sensor" type="Boolean" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="147"/>
+		<location x="227" y="90"/>
 	</widget>
 	<widget field="Elevator: Current Height" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="126"/>
+		<location x="435" y="113"/>
 	</widget>
 	<widget field="Elevator: Right Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="105"/>
+		<location x="452" y="158"/>
 	</widget>
 	<widget field="Elevator: State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="84"/>
+		<location x="484" y="36"/>
 	</widget>
 	<widget field="Elevator: Left Amps" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="63"/>
+		<location x="459" y="136"/>
 	</widget>
 	<widget field="Flap Angle:" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="42"/>
+		<location x="274" y="65"/>
 	</widget>
 	<widget field="Elevator: Goal Height" type="Number" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="21"/>
+		<location x="449" y="87"/>
 	</widget>
 	<widget field="Swerve Speed State" type="String" class="edu.wpi.first.smartdashboard.gui.elements.TextBox">
-		<location x="0" y="0"/>
+		<location x="231" y="40"/>
 	</widget>
 </dashboard>
 <live-window>

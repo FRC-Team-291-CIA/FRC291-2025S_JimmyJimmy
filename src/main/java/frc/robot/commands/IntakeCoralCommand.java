@@ -42,8 +42,8 @@ public class IntakeCoralCommand extends Command {
         m_commandDone = false;
         m_timer.reset();
 
-        System.out.println("INTAKE CORAL COMMAND STARTED");
-        System.out.println("Current Stage: " + m_currentStage.toString());
+        // System.out.println("INTAKE CORAL COMMAND STARTED");
+        // System.out.println("Current Stage: " + m_currentStage.toString());
     }
 
     @Override
@@ -54,7 +54,7 @@ public class IntakeCoralCommand extends Command {
                 // Wait for coral to trigger sensor
                 if (m_coralSubsystem.getIntakeSensorValue()) {
                     m_currentStage = STAGE.STAGE_TWO;
-                    System.out.println("Current Stage: " + m_currentStage.toString());
+                    // System.out.println("Current Stage: " + m_currentStage.toString());
                 } else {
                     m_coralSubsystem.setSpeed(CIAAutoConstants.AUTO_SPEED_CORAL_BEFORE_ENTER);
                 }
@@ -65,7 +65,7 @@ public class IntakeCoralCommand extends Command {
                 if (!m_coralSubsystem.getIntakeSensorValue()) {
                     m_currentStage = STAGE.STAGE_THREE;
                     m_timer.restart();
-                    System.out.println("Current Stage: " + m_currentStage.toString());
+                    // System.out.println("Current Stage: " + m_currentStage.toString());
                 } else {
                     m_coralSubsystem.setSpeed(CIAAutoConstants.AUTO_SPEED_CORAL_AFTER_ENTER);
                 }
@@ -91,7 +91,8 @@ public class IntakeCoralCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("INTAKE CORAL COMMAND COMPLETE" + (interrupted ? " (INTERRUPTED)" : ""));
+        // System.out.println("INTAKE CORAL COMMAND COMPLETE" + (interrupted ? "
+        // (INTERRUPTED)" : ""));
         m_coralSubsystem.setSpeed(0.0); // Stop intake motor
     }
 

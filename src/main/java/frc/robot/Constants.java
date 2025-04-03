@@ -23,7 +23,14 @@ public final class Constants {
       PRACTICE;
     }
 
-    public static final CodeMode CODE_MODE = CodeMode.PRACTICE;
+    public static final CodeMode CODE_MODE = CodeMode.COMPETITION;
+
+    public enum DevControllerMode {
+      ON,
+      OFF;
+    }
+
+    public static final DevControllerMode DEV_CONTROLLER_MODE = DevControllerMode.OFF;
   }
 
   public static class ControllerDriverConstants { // Logitech Gamepad F310 in D Mode
@@ -154,14 +161,15 @@ public final class Constants {
     public static final ArbFFUnits SLOT_ONE_FF_UNITS = ArbFFUnits.kVoltage;
 
     // Predefined elevator height positions for different levels
-    public static final double HEIGHT_CORAL_LEVEL_FOUR = -51.00; // Estimated based on manual lift.
-    public static final double HEIGHT_CORAL_LEVEL_THREE = -28.00; // Slightly lower than 25 for best fit.
-    public static final double HEIGHT_CORAL_LEVEL_TWO = -12.00; // Slightly lower than 10 for best fit.
+    public static final double HEIGHT_CORAL_LEVEL_FOUR = -53.00; // Estimated based on manual lift.
+    public static final double HEIGHT_CORAL_LEVEL_THREE = -25.00; // Slightly lower than 25 for best fit.
+    public static final double HEIGHT_CORAL_LEVEL_TWO = -10.00; // Slightly lower than 10 for best fit.
     public static final double HEIGHT_CORAL_LEVEL_ONE = -5.00; // Unknown value.
     public static final double HEIGHT_CORAL_INTAKE = -0.25; // Unknown value.
     public static final double HEIGHT_PARK = 0.00;
     public static final double HEIGHT_KILL_POWER = Double.NaN;
     public static final double HEIGHT_DISABLED = Double.NaN;
+    public static final double HEIGHT_TEST = Double.NaN;
   }
 
   public static final class CoralConstants {

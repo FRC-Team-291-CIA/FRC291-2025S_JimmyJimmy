@@ -35,6 +35,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     // Latest elevator position (in inches)
     private double m_elevatorHeight = -291.0;
+    private double m_elevatorGoalHeight = -291.0;
+
+    private double m_testHeight = -20;
 
     /**
      * Enum representing logical target positions for the elevator.
@@ -47,7 +50,8 @@ public class ElevatorSubsystem extends SubsystemBase {
         CORAL_INTAKE(ElevatorConstants.HEIGHT_CORAL_INTAKE),
         PARK(ElevatorConstants.HEIGHT_PARK),
         NO_POWER(ElevatorConstants.HEIGHT_KILL_POWER),
-        DISABLED(ElevatorConstants.HEIGHT_DISABLED);
+        DISABLED(ElevatorConstants.HEIGHT_DISABLED),
+        TEST(ElevatorConstants.HEIGHT_TEST);
 
         private final double height;
 
@@ -151,6 +155,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     public void periodic() {
         // Update elevator height each loop
         m_elevatorHeight = m_encoderLeft.getPosition();
+
         sendSmartDashboardValues();
     }
 
@@ -160,7 +165,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     private void sendSmartDashboardValues() {
         SmartDashboard.putString("Elevator: State", m_currentElevatorState.toString());
         SmartDashboard.putString("Elevator: Motor Mode", m_currentMotorState.toString());
-        SmartDashboard.putNumber("Elevator: Goal Height", m_currentElevatorState.getHeight());
+        SmartDashboard.putNumber("Elevator: Goal Height", m_elevatorGoalHeight);
         SmartDashboard.putNumber("Elevator: Current Height", m_elevatorHeight);
         SmartDashboard.putNumber("Elevator: Left Amps", m_motorLeft.getOutputCurrent());
         SmartDashboard.putNumber("Elevator: Right Amps", m_motorRight.getOutputCurrent());
@@ -185,6 +190,18 @@ public class ElevatorSubsystem extends SubsystemBase {
             return;
         }
 
+        if (targetState == ElevatorState.TEST) {
+            m_elevatorGoalHeight = m_testHeight;
+            // For testing purposes, set a fixed height
+            m_controllerLeft.setReference(
+                    m_testHeight, ControlType.kPosition,
+                    m_currentMotorState.getSlot(),
+                    m_currentMotorState.getFF(),
+                    m_currentMotorState.getUnits());
+            return;
+        }
+
+        m_elevatorGoalHeight = targetState.getHeight(); // Save the goal height for telemetry
         // Set closed-loop position reference using current slot and FF
         m_controllerLeft.setReference(
                 targetState.getHeight(), ControlType.kPosition,
@@ -200,5 +217,13 @@ public class ElevatorSubsystem extends SubsystemBase {
         m_currentMotorState = (m_elevatorHeight <= m_currentElevatorState.getHeight())
                 ? MotorState.DOWN
                 : MotorState.UP;
+    }
+
+    public void increaseTestHeight() {
+        m_testHeight = m_testHeight - 1;
+    }
+
+    public void decreaseTestHeight() {
+        m_testHeight = m_testHeight + 1;
     }
 }

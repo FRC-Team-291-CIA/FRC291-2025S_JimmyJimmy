@@ -147,6 +147,8 @@ public class FlapSubsystem extends SubsystemBase {
                     }
                     break;
             }
+        } else {
+            m_motor.stopMotor();
         }
     }
 

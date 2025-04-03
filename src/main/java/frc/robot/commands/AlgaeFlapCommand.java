@@ -100,12 +100,11 @@ public class AlgaeFlapCommand extends Command {
                     m_timer.restart();
                 } else {
                     m_elevatorSubsystem.setGoalState(m_elevatorLevel);
-                    m_flapSubsystem.setWantedState(FlapState.UP);
+                    m_flapSubsystem.setWantedState(FlapState.DISABLED);
                 }
                 break;
 
             case STAGE_TWO:
-                // Wait 1 second while leveling flap to eject coral
                 if (m_timer.get() > 1.0) {
                     m_currentStage = STAGE.STAGE_THREE;
                     System.out.println("Current Stage: " + m_currentStage.toString());

@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import org.json.simple.parser.ParseException;
@@ -100,6 +101,12 @@ public class SwerveSubsystem extends SubsystemBase {
   // FRC 291: Added Speed State Variable
   private SpeedState m_currentSpeedState = SpeedState.NORMAL;
 
+  // FRC 291: For BooleanSupplier Functions
+  private boolean fastStateTriggered = false;
+  private boolean normalStateTriggered = false;
+  private boolean slowStateTriggered = false;
+  private boolean verySlowStateTriggered = false;
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
@@ -117,7 +124,7 @@ public class SwerveSubsystem extends SubsystemBase {
     // objects being created.
     switch (CodeConstants.CODE_MODE) {
       case COMPETITION:
-        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.NONE;
+        SwerveDriveTelemetry.verbosity = TelemetryVerbosity.MACHINE;
         break;
       case PRACTICE:
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -763,14 +770,32 @@ public class SwerveSubsystem extends SubsystemBase {
     return swerveDrive;
   }
 
-  // FRC 291: Added Speed State Function
   public void setWantedSpeedState(SpeedState speedState) {
-    m_currentSpeedState = speedState;
+    if (m_currentSpeedState != speedState) {
+      m_currentSpeedState = speedState;
 
-    System.out.println("Speed State: " + m_currentSpeedState.toString());
+      System.out.println("Speed State: " + m_currentSpeedState);
 
-    swerveDrive.setMaximumAllowableSpeeds(m_currentSpeedState.maxTranslationalSpeedMetersPerSecond,
-        m_currentSpeedState.maxRotationalVelocityRadiansPerSecond);
+      // Set the right flag
+      switch (speedState) {
+        case FAST:
+          fastStateTriggered = true;
+          break;
+        case NORMAL:
+          normalStateTriggered = true;
+          break;
+        case SLOW:
+          slowStateTriggered = true;
+          break;
+        case VERY_SLOW:
+          verySlowStateTriggered = true;
+          break;
+      }
+
+      swerveDrive.setMaximumAllowableSpeeds(
+          m_currentSpeedState.getMaxTranslationalSpeed(),
+          m_currentSpeedState.getMaxRotationalVelocity());
+    }
   }
 
   // FRC 291: Add Shift Toggles for Speed
@@ -807,4 +832,46 @@ public class SwerveSubsystem extends SubsystemBase {
         break;
     }
   }
+
+  // FRC 291: Functions for BooleanSupplier
+  public BooleanSupplier onFastSelected() {
+    return () -> {
+      if (fastStateTriggered) {
+        fastStateTriggered = false;
+        return true;
+      }
+      return false;
+    };
+  }
+
+  public BooleanSupplier onNormalSelected() {
+    return () -> {
+      if (normalStateTriggered) {
+        normalStateTriggered = false;
+        return true;
+      }
+      return false;
+    };
+  }
+
+  public BooleanSupplier onSlowSelected() {
+    return () -> {
+      if (slowStateTriggered) {
+        slowStateTriggered = false;
+        return true;
+      }
+      return false;
+    };
+  }
+
+  public BooleanSupplier onVerySlowSelected() {
+    return () -> {
+      if (verySlowStateTriggered) {
+        verySlowStateTriggered = false;
+        return true;
+      }
+      return false;
+    };
+  }
+
 }
