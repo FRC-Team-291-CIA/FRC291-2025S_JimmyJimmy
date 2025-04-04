@@ -245,6 +245,8 @@ public final class Constants {
     // Used in IntakeCoralCommand.java
     public static final double AUTO_SPEED_CORAL_BEFORE_ENTER = 0.5;
     public static final double AUTO_SPEED_CORAL_AFTER_ENTER = 0.25;
+
+    public static final double AUTO_SCORE_SPEED_OUT = 0.4;
   }
 
 }

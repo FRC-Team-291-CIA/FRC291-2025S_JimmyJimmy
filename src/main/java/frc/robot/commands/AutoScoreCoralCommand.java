@@ -77,7 +77,7 @@ public class AutoScoreCoralCommand extends Command {
 
             case STAGE_ONE:
                 // Give elevator time to reach scoring height
-                if (m_timer.hasElapsed(1.0)) {
+                if (m_timer.hasElapsed(2.0)) {
                     m_currentStage = STAGE.STAGE_TWO;
                     System.out.println("Transitioned to: " + m_currentStage.toString());
                     m_timer.restart();
@@ -88,11 +88,11 @@ public class AutoScoreCoralCommand extends Command {
 
             case STAGE_TWO:
                 // Run intake to score, then finish
-                if (m_timer.hasElapsed(1.0)) {
+                if (m_timer.hasElapsed(3)) {
                     m_commandDone = true;
                 } else {
                     m_elevatorSubsystem.setGoalState(m_elevatorLevel); // Keep holding position
-                    m_coralSubsystem.setSpeed(CIAAutoConstants.AUTO_SPEED_CORAL_AFTER_ENTER); // Score coral
+                    m_coralSubsystem.setSpeed(CIAAutoConstants.AUTO_SCORE_SPEED_OUT); // Score coral
                 }
                 break;
         }
