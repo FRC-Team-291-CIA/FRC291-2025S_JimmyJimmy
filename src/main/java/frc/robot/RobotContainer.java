@@ -327,7 +327,7 @@ public class RobotContainer {
                 // ===== Coral =====
                 // === Operator Controller ===
                 m_controllerOperator.button(ControllerOperatorConstants.BUTTON_BUMPER_TOP_LEFT)
-                                .whileTrue(m_coral.manualForwardSlowCommand());
+                                .whileTrue(new IntakeCoralCommand(m_coral));
 
                 m_controllerOperator.button(ControllerOperatorConstants.BUTTON_BUMPER_TOP_RIGHT)
                                 .whileTrue(m_coral.manualForwardFastCommand());
