@@ -164,7 +164,6 @@ public class RobotContainer {
                                 new AutoScoreCoralCommand(m_coral, m_elevator, ElevatorState.CORAL_LEVEL_THREE));
                 NamedCommands.registerCommand("Score Level Two",
                                 new AutoScoreCoralCommand(m_coral, m_elevator, ElevatorState.CORAL_LEVEL_TWO));
-
                 NamedCommands.registerCommand("Algae Flap Command",
                                 new AlgaeFlapCommand(m_elevator, m_flap, m_drivebase, ElevatorState.CORAL_LEVEL_TWO));
 
@@ -186,33 +185,27 @@ public class RobotContainer {
 
                 // Configure the trigger bindings
                 configureBindings();
-                RobotModeTriggers.teleop()
-                                .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
-                RobotModeTriggers.teleop()
-                                .onTrue(Commands.runOnce(() -> DogLog.setEnabled(true)));
-                RobotModeTriggers.autonomous()
-                                .onTrue(Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)));
-                RobotModeTriggers.autonomous()
-                                .onTrue(Commands.runOnce(() -> DogLog.setEnabled(true)));
-                RobotModeTriggers.disabled()
-                                .onTrue(Commands.runOnce(() -> m_led.setStripState(StripAnimationState.Fire)));
-                RobotModeTriggers.disabled()
-                                .onTrue(Commands.runOnce(() -> m_led.setDeviceState(DeviceLEDState.ORANGE)));
-                RobotModeTriggers.disabled()
-                                .onTrue(Commands.runOnce(() -> DogLog.setEnabled(false)));
+                RobotModeTriggers.teleop().onTrue(Commands.parallel(
+                                Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL), m_drivebase),
+                                Commands.runOnce(() -> DogLog.setEnabled(true))));
+
+                RobotModeTriggers.autonomous().onTrue(Commands.parallel(
+                                Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL), m_drivebase),
+                                Commands.runOnce(() -> DogLog.setEnabled(true))));
+
                 DriverStation.silenceJoystickConnectionWarning(true);
 
                 new Trigger(m_drivebase.onFastSelected())
-                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(0, 0, 255)));
+                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(0, 0, 255), m_led));
 
                 new Trigger(m_drivebase.onNormalSelected())
-                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(0, 255, 0)));
+                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(0, 255, 0), m_led));
 
                 new Trigger(m_drivebase.onSlowSelected())
-                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(255, 255, 0)));
+                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(255, 255, 0), m_led));
 
                 new Trigger(m_drivebase.onVerySlowSelected())
-                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(255, 0, 0)));
+                                .onTrue(Commands.runOnce(() -> m_led.setStripColor(255, 0, 0), m_led));
 
                 SmartDashboard.putData("Flap Command", m_flap);
                 SmartDashboard.putData("Coral Command", m_coral);

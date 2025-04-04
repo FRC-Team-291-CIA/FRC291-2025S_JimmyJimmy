@@ -771,31 +771,29 @@ public class SwerveSubsystem extends SubsystemBase {
   }
 
   public void setWantedSpeedState(SpeedState speedState) {
-    if (m_currentSpeedState != speedState) {
-      m_currentSpeedState = speedState;
+    m_currentSpeedState = speedState;
 
-      // System.out.println("Speed State: " + m_currentSpeedState);
+    // System.out.println("Speed State: " + m_currentSpeedState);
 
-      // Set the right flag
-      switch (speedState) {
-        case FAST:
-          fastStateTriggered = true;
-          break;
-        case NORMAL:
-          normalStateTriggered = true;
-          break;
-        case SLOW:
-          slowStateTriggered = true;
-          break;
-        case VERY_SLOW:
-          verySlowStateTriggered = true;
-          break;
-      }
-
-      swerveDrive.setMaximumAllowableSpeeds(
-          m_currentSpeedState.getMaxTranslationalSpeed(),
-          m_currentSpeedState.getMaxRotationalVelocity());
+    // Set the right flag
+    switch (speedState) {
+      case FAST:
+        fastStateTriggered = true;
+        break;
+      case NORMAL:
+        normalStateTriggered = true;
+        break;
+      case SLOW:
+        slowStateTriggered = true;
+        break;
+      case VERY_SLOW:
+        verySlowStateTriggered = true;
+        break;
     }
+
+    swerveDrive.setMaximumAllowableSpeeds(
+        m_currentSpeedState.getMaxTranslationalSpeed(),
+        m_currentSpeedState.getMaxRotationalVelocity());
   }
 
   // FRC 291: Add Shift Toggles for Speed

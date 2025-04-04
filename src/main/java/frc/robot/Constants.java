@@ -102,7 +102,7 @@ public final class Constants {
     public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
     public static final Matter CHASSIS = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
     public static final double LOOP_TIME = 0.13; // s, 20ms + 110ms spark max velocity lag
-    public static final double MAX_SPEED = Units.feetToMeters(14.5);
+    public static final double MAX_SPEED = Units.feetToMeters(40); // FRC 291: With No Frictions, Max Motor Output of 1.
 
     // FRC 291: From Based Constants.java in DrivebaseConstants class
     public static final double WHEEL_LOCK_TIME = 10; // seconds
@@ -115,10 +115,10 @@ public final class Constants {
   }
 
   public static final class SwerveConstants {
-    public static final double SPEED_FAST_MAX_TRANSITIONAL = 35.00;
+    public static final double SPEED_FAST_MAX_TRANSITIONAL = 7; // Actual Max is 12.192
     public static final double SPEED_FAST_MAX_ROTATIONAL = 10.00;
 
-    public static final double SPEED_NORMAL_MAX_TRANSITIONAL = 30.00;
+    public static final double SPEED_NORMAL_MAX_TRANSITIONAL = 5.4;
     public static final double SPEED_NORMAL_MAX_ROTATIONAL = 10.0;
 
     public static final double SPEED_SLOW_MAX_TRANSITIONAL = 4.00;
