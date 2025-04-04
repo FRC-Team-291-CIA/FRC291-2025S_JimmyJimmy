@@ -774,7 +774,7 @@ public class SwerveSubsystem extends SubsystemBase {
     if (m_currentSpeedState != speedState) {
       m_currentSpeedState = speedState;
 
-      System.out.println("Speed State: " + m_currentSpeedState);
+      // System.out.println("Speed State: " + m_currentSpeedState);
 
       // Set the right flag
       switch (speedState) {

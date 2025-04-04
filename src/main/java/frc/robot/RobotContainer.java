@@ -170,10 +170,14 @@ public class RobotContainer {
 
                 m_chooser.setDefaultOption("DO NOTHING", Commands.none());
                 m_chooser.addOption("FORWARD ONLY", m_drivebase.getAutonomousCommand("FORWARD ONLY"));
-                m_chooser.addOption("SCORE CENTER REEF TO G",
-                                m_drivebase.getAutonomousCommand("SCORE CENTER REEF TO G"));
-                m_chooser.addOption("SCORE CENTER REEF TO H",
-                                m_drivebase.getAutonomousCommand("SCORE CENTER REEF TO H"));
+                m_chooser.addOption("SCORE L3 CENTER REEF TO G",
+                                m_drivebase.getAutonomousCommand("SCORE L3 CENTER REEF TO G"));
+                m_chooser.addOption("SCORE L3 CENTER REEF TO H",
+                                m_drivebase.getAutonomousCommand("SCORE L3 CENTER REEF TO H"));
+                m_chooser.addOption("SCORE L4 CENTER REEF TO G",
+                                m_drivebase.getAutonomousCommand("SCORE L4 CENTER REEF TO G"));
+                m_chooser.addOption("SCORE L4 CENTER REEF TO H",
+                                m_drivebase.getAutonomousCommand("SCORE L4 CENTER REEF TO H"));
                 m_chooser.addOption("ALGAE CENTER REEF TO H",
                                 m_drivebase.getAutonomousCommand("ALGAE CENTER REEF TO H"));
                 m_chooser.addOption("ALGAE CENTER REEF TO G",

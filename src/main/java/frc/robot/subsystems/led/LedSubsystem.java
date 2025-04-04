@@ -68,7 +68,7 @@ public class LedSubsystem extends SubsystemBase {
     }
 
     public void toggle5VOverride() {
-        System.out.println("5V Override State is: " + m_last5V);
+        // System.out.println("5V Override State is: " + m_last5V);
         m_candle.configV5Enabled(m_last5V);
         m_last5V = !m_last5V;
     }
@@ -134,7 +134,7 @@ public class LedSubsystem extends SubsystemBase {
                 break;
         }
 
-        System.out.println("Device LED set to: " + state.name());
+        // System.out.println("Device LED set to: " + state.name());
     }
 
     public void setStripState(StripAnimationState type) {
@@ -160,7 +160,7 @@ public class LedSubsystem extends SubsystemBase {
         m_candle.clearAnimation(m_candleChannel);
         m_candle.animate(m_toAnimate, m_candleChannel);
 
-        System.out.println("Strip animation set to: " + type.name());
+        // System.out.println("Strip animation set to: " + type.name());
     }
 
     public void setStripColor(int r, int g, int b) {
@@ -171,6 +171,7 @@ public class LedSubsystem extends SubsystemBase {
         m_currentStripState = null;
 
         m_candle.setLEDs(r, g, b, 0, STRIP_LED_START, STRIP_LED_COUNT);
-        System.out.println("Strip color set to RGB(" + r + ", " + g + ", " + b + ")");
+        // System.out.println("Strip color set to RGB(" + r + ", " + g + ", " + b +
+        // ")");
     }
 }
