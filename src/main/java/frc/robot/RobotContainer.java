@@ -190,7 +190,7 @@ public class RobotContainer {
                                 Commands.runOnce(() -> DogLog.setEnabled(true))));
 
                 RobotModeTriggers.autonomous().onTrue(Commands.parallel(
-                                Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL), m_drivebase),
+                                Commands.runOnce(() -> m_drivebase.setWantedSpeedState(SpeedState.NORMAL)),
                                 Commands.runOnce(() -> DogLog.setEnabled(true))));
 
                 DriverStation.silenceJoystickConnectionWarning(true);
