@@ -170,3 +170,6 @@ compile_commands.json
 
 # Eclipse generated file for annotation processors
 .factorypath
+
+# GitIgnore Exception for the Old Project Zip File
+!/INITIAL_PROJECT/FRC291-2025S_Mentor_YAGSL-main.zip
