@@ -277,7 +277,7 @@ public class RobotContainer {
 
                 // ===== Swerve =====
                 // === Driver Controller ===
-                m_controllerDriver.button(ControllerDriverConstants.BUTTON_A)
+                m_controllerDriver.button(ControllerDriverConstants.BUTTON_BACK)
                                 .onTrue(Commands.runOnce(m_drivebase::zeroGyro));
 
                 m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_TOP_LEFT)
@@ -338,6 +338,23 @@ public class RobotContainer {
                 m_controllerOperator.pov(180)
                                 .whileTrue(m_coral.manualReverseSlowCommand());
                 // ===== Flap =====
+                // === Driver Controller ===
+                switch (FlapConstants.FLAP_CONTROL_MODE) {
+                        case ANGLE:
+                                m_controllerDriver.button(ControllerDriverConstants.BUTTON_A)
+                                                .onTrue(Commands.runOnce(m_flap::stateShiftDown));
+
+                                m_controllerDriver.button(ControllerDriverConstants.BUTTON_Y)
+                                                .onTrue(Commands.runOnce(m_flap::stateShiftUp));
+                                break;
+                        case MANUAL:
+                                m_controllerDriver.button(ControllerDriverConstants.BUTTON_A)
+                                                .whileTrue(Commands.run(() -> m_flap.setWantedState(FlapState.DOWN)));
+
+                                m_controllerDriver.button(ControllerDriverConstants.BUTTON_Y)
+                                                .whileTrue(Commands.run(() -> m_flap.setWantedState(FlapState.UP)));
+                                break;
+                }
                 // === Operator Controller ===
                 switch (FlapConstants.FLAP_CONTROL_MODE) {
                         case ANGLE:
@@ -364,11 +381,12 @@ public class RobotContainer {
                 m_controllerDriver.button(ControllerDriverConstants.BUTTON_BUMPER_BOTTOM_LEFT)
                                 .whileTrue(Commands.run(() -> m_climber.climbDown()));
                 // === Operator Controller ===
-                m_controllerOperator.pov(90)
-                                .whileTrue(Commands.run(() -> m_climber.climbUp()));
+                // Removed Per Drive Team Discussion
+                // m_controllerOperator.pov(90)
+                //                 .whileTrue(Commands.run(() -> m_climber.climbUp()));
 
-                m_controllerOperator.pov(270)
-                                .whileTrue(Commands.run(() -> m_climber.climbDown()));
+                // m_controllerOperator.pov(270)
+                //                 .whileTrue(Commands.run(() -> m_climber.climbDown()));
 
                 switch (CodeConstants.DEV_CONTROLLER_MODE) {
                         case ON:
